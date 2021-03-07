@@ -55,4 +55,4 @@ A_oriented = floor((1.0 - N3*0.02 - N4*0.005 - 0.25)*T)
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
 - **[MIT license](http://opensource.org/licenses/mit-license.php)**
-- Copyright 2020 © <a href="https://github.com/Pinhanderler" target="_blank">Pinhanderler</a>.
+- Copyright 2021 © <a href="https://github.com/Pinhanderler" target="_blank">Pinhanderler</a>.
