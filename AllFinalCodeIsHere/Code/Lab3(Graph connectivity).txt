@@ -1,0 +1,581 @@
+﻿clf;  //clearing canvas
+clear;
+
+TypeOfGraph = 1; //0 is for non-oriented,1 for oriented
+
+N1 = 9;  //numbers of My Zalikovka to make figure
+N2 = 8;
+N3 = 8;
+N4 = 2;
+
+N = 10 + N3;  //number of vertexes
+//N=5
+
+//preparing for making canvas
+//making values for plot2d
+
+//x on left is 0
+ForPlot_X1 = 0;
+//x on right is 70
+ForPlot_X2 = 70;
+//y on down is 0
+ForPlot_Y1 = 0;
+//y on upper is 70
+ForPlot_Y2 = 70;
+
+RadiusOfCircle = 5;  //Woah,its radius of circle
+DiameterOfCircle = 2*RadiusOfCircle; //Woah,its diameter of circle
+
+ColorOfArrow_1 = 14;  //color of arrow_1  //1 is good
+ColorOfArrow_2 = 9;  //color of arrow_2   //3,
+
+N1N2N3N4 = N1*1000 + N2*100 + N3*10 + N4
+
+//generating matrix for or-graph(from the konspekt)
+rand("seed", N1N2N3N4);
+T = rand(N,N) + rand(N,N);
+A_oriented = floor((1.0 - N3*0.005 - N4*0.005 - 0.27)*T)
+
+//generating matrix for non_or-graph
+At=A_oriented';  //transpose matrix
+A_non_oriented=At+A_oriented  //final non_oriented matrix(adding regular matrix and transpose)
+
+  //loop,where we changing 2,which we get by adding
+  //two matrixes,for every element,that = 2
+for v=1:1:N
+  for v1=1:1:N
+    if A_non_oriented(v,v1) == 2
+    A_non_oriented(v,v1)=1
+    end
+  end
+end
+
+//choosing matrix and width of arrows
+if TypeOfGraph == 0
+  Matrix = A_non_oriented;
+  WidthOfArrow = 0;
+elseif TypeOfGraph == 1
+  Matrix = A_oriented;
+  WidthOfArrow = 30;
+end
+
+//making canvas with our varibles
+
+//plot2d([0,200],[0,100],[-1,-1],"022") — формує
+//прямокутне поле у графічному вікні розміром 100х200 одиниць.
+//xsetech-ділить вікно на області
+
+xsetech([0,0,0.5,1]);
+plot2d([ForPlot_X1;ForPlot_X2],[ForPlot_Y1;ForPlot_Y2],0);
+
+//looking for a center
+//(100-0)/2=50
+X_O = (ForPlot_X2-ForPlot_X1)/2;
+Y_O = (ForPlot_Y2-ForPlot_Y1)/2;
+//radius of the big circle,on which we will place our vertexes
+BigRadius = 2/5*sqrt((ForPlot_X2-ForPlot_X1)*(ForPlot_Y2-ForPlot_Y1))
+
+for x=1:1:N//making operations for each element
+  X_Position = cos(2 * %pi * x / N) * BigRadius + X_O;//calculating coordinates
+  Y_Position = sin(2 * %pi * x / N) * BigRadius + Y_O;
+
+  //drawing vertexes
+
+  // xarc(x,y,w,h,a1,a2) — малювання дуги еліпса, який вписаний у прямокутник
+  //з координатами (х,у) верхнього лівого кута і шириною w та висотою h,
+  //яка обмежена променями з кутами а1 і а2, які задаються у 64-х частках градуса.
+  //Наприклад, коло діаметром 4 одиниць з центром у точці (10,20) задається
+  //функцією xarc(8,22,4,4,0,360*64);
+
+  xarc(X_Position,Y_Position,DiameterOfCircle,DiameterOfCircle,0,360*64);
+
+  // xnumb(x,y,data) — вивід числа data починаючи з позиції з координатами
+  //(х,у).
+
+  xnumb(X_Position+RadiusOfCircle,Y_Position-RadiusOfCircle,x);
+end
+
+//need 11 variables for non_oriented and 22(11 for enter and 11 for exit) for oriented graph
+
+Vertex_1_Exit=0;
+Vertex_2_Exit=0;
+Vertex_3_Exit=0;
+Vertex_4_Exit=0;
+Vertex_5_Exit=0;
+Vertex_6_Exit=0;
+Vertex_7_Exit=0;
+Vertex_8_Exit=0;
+Vertex_9_Exit=0;
+Vertex_10_Exit=0;
+Vertex_11_Exit=0;
+
+Vertex_1_Enter=0;
+Vertex_2_Enter=0;
+Vertex_3_Enter=0;
+Vertex_4_Enter=0;
+Vertex_5_Enter=0;
+Vertex_6_Enter=0;
+Vertex_7_Enter=0;
+Vertex_8_Enter=0;
+Vertex_9_Enter=0;
+Vertex_10_Enter=0;
+Vertex_11_Enter=0;
+
+Vertex_1_Non_oriented=0;
+Vertex_2_Non_oriented=0;
+Vertex_3_Non_oriented=0;
+Vertex_4_Non_oriented=0;
+Vertex_5_Non_oriented=0;
+Vertex_6_Non_oriented=0;
+Vertex_7_Non_oriented=0;
+Vertex_8_Non_oriented=0;
+Vertex_9_Non_oriented=0;
+Vertex_10_Non_oriented=0;
+Vertex_11_Non_oriented=0;
+
+for i=1:1:N
+  for j=1:1:N
+    if Matrix(i,j) == 1;
+
+      Position_X_I = cos(2 * %pi * i / N) * (BigRadius-RadiusOfCircle) + X_O;
+      Position_Y_I = sin(2 * %pi * i / N) * (BigRadius-RadiusOfCircle) + Y_O;
+      Position_X_J = cos(2 * %pi * j / N) * (BigRadius-RadiusOfCircle) + X_O;
+      Position_Y_J = sin(2 * %pi * j / N) * (BigRadius-RadiusOfCircle) + Y_O;
+      i1=i;
+
+      select i1
+        case 1
+          Vertex_1_Exit=Vertex_1_Exit+1;
+        case 2
+          Vertex_2_Exit=Vertex_2_Exit+1;
+          case 3
+            Vertex_3_Exit=Vertex_3_Exit+1;
+          case 4
+            Vertex_4_Exit=Vertex_4_Exit+1;
+          case 5
+            Vertex_5_Exit=Vertex_5_Exit+1;
+          case 6
+            Vertex_6_Exit=Vertex_6_Exit+1;
+          case 7
+            Vertex_7_Exit=Vertex_7_Exit+1;
+          case 8
+            Vertex_8_Exit=Vertex_8_Exit+1;
+          case 9
+            Vertex_9_Exit=Vertex_9_Exit+1;
+          case 10
+            Vertex_10_Exit=Vertex_10_Exit+1;
+          case 11
+            Vertex_11_Exit=Vertex_11_Exit+1;
+          end
+
+          j1=j;
+
+          select j1
+          case 1
+            Vertex_1_Enter=Vertex_1_Enter+1;
+          case 2
+            Vertex_2_Enter=Vertex_2_Enter+1;
+          case 3
+            Vertex_3_Enter=Vertex_3_Enter+1;
+          case 4
+            Vertex_4_Enter=Vertex_4_Enter+1;
+          case 5
+            Vertex_5_Enter=Vertex_5_Enter+1;
+          case 6
+            Vertex_6_Enter=Vertex_6_Enter+1;
+          case 7
+            Vertex_7_Enter=Vertex_7_Enter+1;
+          case 8
+            Vertex_8_Enter=Vertex_8_Enter+1;
+          case 9
+            Vertex_9_Enter=Vertex_9_Enter+1;
+          case 10
+            Vertex_10_Enter=Vertex_10_Enter+1;
+          case 11
+            Vertex_11_Enter=Vertex_11_Enter+1;
+          end
+
+      if i == j
+        A1=i;
+        A2=j;
+
+        Position_X_I = cos(2 * %pi * i / N) * (BigRadius) + X_O;
+        Position_Y_I = sin(2 * %pi * i / N) * (BigRadius) + Y_O;
+        Position_X_J = cos(2 * %pi * j / N) * (BigRadius) + X_O;
+        Position_Y_J = sin(2 * %pi * j / N) * (BigRadius) + Y_O;
+        xarc(Position_X_I-RadiusOfCircle,Position_Y_I+RadiusOfCircle*3/4,3/2*DiameterOfCircle,3/2*DiameterOfCircle,0,190*64);
+
+        //xarrows([x1;x2], [y1;y2], w, c) — стрілка з координатами початку
+        //(x1;y1), кінця (x2;y2), розмірами вістря w і кольором с (с=1 –чорний, 2– синій і
+        //т.д.).
+
+        xarrows([Position_X_I-RadiusOfCircle; Position_X_J],[Position_Y_I-RadiusOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, 1);
+
+      else
+        if Matrix(i,j)==Matrix(j,i) && i>j
+
+          if TypeOfGraph == 1
+            CentrePosition_X = (Position_X_I+RadiusOfCircle+Position_X_J+RadiusOfCircle)/2;
+            CentrePosition_Y = (Position_Y_I-RadiusOfCircle+Position_Y_J)/2;
+
+            // xsegs([x1;y1], [x2;y2], c) — пряма з координатами початку [x1;y1],
+            //кінця [x2;y2] і кольором с.
+
+            if (CentrePosition_X<X_O && CentrePosition_Y<Y_O)
+              xsegs([Position_X_I+RadiusOfCircle; CentrePosition_X+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; CentrePosition_Y+DiameterOfCircle],ColorOfArrow_2);
+              xarrows([CentrePosition_X+RadiusOfCircle; Position_X_J+RadiusOfCircle],[CentrePosition_Y+DiameterOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_2);
+
+            elseif (CentrePosition_X>X_O && CentrePosition_Y<Y_O)
+              xsegs([Position_X_I+RadiusOfCircle; CentrePosition_X+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; CentrePosition_Y+DiameterOfCircle],ColorOfArrow_2);
+              xarrows([CentrePosition_X+RadiusOfCircle; Position_X_J+RadiusOfCircle],[CentrePosition_Y+DiameterOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_2);
+
+            elseif (CentrePosition_X>X_O && CentrePosition_Y>Y_O)
+              xsegs([Position_X_I+RadiusOfCircle; CentrePosition_X-RadiusOfCircle],[Position_Y_I-RadiusOfCircle; CentrePosition_Y-DiameterOfCircle],ColorOfArrow_2);
+              xarrows([CentrePosition_X-RadiusOfCircle; Position_X_J+RadiusOfCircle],[CentrePosition_Y-DiameterOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_2);
+
+            elseif (CentrePosition_X<X_O && CentrePosition_Y>Y_O)
+              xsegs([Position_X_I+RadiusOfCircle; CentrePosition_X+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; CentrePosition_Y-DiameterOfCircle],ColorOfArrow_2);
+              xarrows([CentrePosition_X+RadiusOfCircle; Position_X_J+RadiusOfCircle],[CentrePosition_Y-DiameterOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_2);
+
+            end
+
+          else
+            xarrows([Position_X_I+RadiusOfCircle; Position_X_J+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_1);
+
+        end
+
+          elseif TypeOfGraph == 0
+            else
+            xarrows([Position_X_I+RadiusOfCircle; Position_X_J+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_1);
+          end
+      end
+    end
+  end
+end
+
+if TypeOfGraph == 1
+  Vertex_1_Non_oriented=Vertex_1_Exit+Vertex_1_Enter
+  Vertex_2_Non_oriented=Vertex_2_Exit+Vertex_2_Enter
+  Vertex_3_Non_oriented=Vertex_3_Exit+Vertex_3_Enter
+  Vertex_4_Non_oriented=Vertex_4_Exit+Vertex_4_Enter
+  Vertex_5_Non_oriented=Vertex_5_Exit+Vertex_5_Enter
+  Vertex_6_Non_oriented=Vertex_6_Exit+Vertex_6_Enter
+  Vertex_7_Non_oriented=Vertex_7_Exit+Vertex_7_Enter
+  Vertex_8_Non_oriented=Vertex_8_Exit+Vertex_8_Enter
+  Vertex_9_Non_oriented=Vertex_9_Exit+Vertex_9_Enter
+  Vertex_10_Non_oriented=Vertex_10_Exit+Vertex_10_Enter
+  Vertex_11_Non_oriented=Vertex_11_Exit+Vertex_11_Enter
+elseif TypeOfGraph == 0
+  Vertex_1_Non_oriented=Vertex_1_Exit
+  Vertex_2_Non_oriented=Vertex_2_Exit
+  Vertex_3_Non_oriented=Vertex_3_Exit
+  Vertex_4_Non_oriented=Vertex_4_Exit
+  Vertex_5_Non_oriented=Vertex_5_Exit
+  Vertex_6_Non_oriented=Vertex_6_Exit
+  Vertex_7_Non_oriented=Vertex_7_Exit
+  Vertex_8_Non_oriented=Vertex_8_Exit
+  Vertex_9_Non_oriented=Vertex_9_Exit
+  Vertex_10_Non_oriented=Vertex_10_Exit
+  Vertex_11_Non_oriented=Vertex_11_Exit
+end
+
+//making matrixes of variables to make it easier
+//Power of vertexes
+
+//Exit      Enter
+MatrixOfOrVertexes = [Vertex_1_Exit Vertex_1_Enter;Vertex_2_Exit Vertex_2_Enter;Vertex_3_Exit Vertex_3_Enter;Vertex_4_Exit Vertex_4_Enter;Vertex_5_Exit Vertex_5_Enter;Vertex_6_Exit Vertex_6_Enter;Vertex_7_Exit Vertex_7_Enter;Vertex_8_Exit Vertex_8_Enter;Vertex_9_Exit Vertex_9_Enter;Vertex_10_Exit Vertex_10_Enter;Vertex_11_Exit Vertex_11_Enter];
+
+//Sum
+MatrixOfNonOrVertexes = [Vertex_1_Non_oriented;Vertex_2_Non_oriented;Vertex_3_Non_oriented;Vertex_4_Non_oriented;Vertex_5_Non_oriented;Vertex_6_Non_oriented;Vertex_7_Non_oriented;Vertex_8_Non_oriented;Vertex_9_Non_oriented;Vertex_10_Non_oriented;Vertex_11_Non_oriented];
+
+//Exit      Enter      Sum
+//not using right now
+MatrixOfEveryVertexes = cat(2,MatrixOfOrVertexes,MatrixOfNonOrVertexes);
+
+//printing variables
+
+  if TypeOfGraph == 1
+    disp("Exit      Enter")
+    MatrixOfOrVertexes
+
+  elseif TypeOfGraph == 0
+    disp("Sum")
+    MatrixOfNonOrVertexes///2 and delete  Vertex_1_Non_oriented=Vertex_1_Exit ^
+  end
+
+//checking if graph is homogeneous
+
+if Vertex_1_Non_oriented==Vertex_2_Non_oriented && Vertex_2_Non_oriented==Vertex_3_Non_oriented && Vertex_3_Non_oriented==Vertex_4_Non_oriented && Vertex_4_Non_oriented==Vertex_5_Non_oriented && Vertex_5_Non_oriented==Vertex_6_Non_oriented && Vertex_6_Non_oriented==Vertex_7_Non_oriented && Vertex_7_Non_oriented==Vertex_8_Non_oriented && Vertex_8_Non_oriented==Vertex_9_Non_oriented && Vertex_9_Non_oriented==Vertex_10_Non_oriented && Vertex_10_Non_oriented==Vertex_11_Non_oriented// && Vertex_11_Non_oriented==Vertex_1_Non_oriented
+  homogeneousGraph=1;
+  disp('The graph is homogeneous and its power = ', Vertex_1_Non_oriented);
+else
+  homogeneousGraph=0;
+  disp('The graph is not homogeneous');
+end
+
+////identifying if vertexes isolated or floppy
+for x = 1:1:N
+  if MatrixOfNonOrVertexes(x)==1
+    disp('Vertex',x,'is floppy');
+  elseif MatrixOfNonOrVertexes(x)==0
+    disp('Vertex',x,'is isolated');
+  end
+end
+
+/////searching for pathes
+MatrixForPathes = Matrix
+
+//adding 0 to main diagonal
+[nRows,nCols] = size(MatrixForPathes)
+MatrixForPathes(1:(nRows+1):nRows*nCols) = 0
+
+//making power matrixes
+MatrixForPathes_2_power = MatrixForPathes^2
+MatrixForPathes_3_power = MatrixForPathes^3
+
+//searching for Reachability Matrix
+
+I=eye(Matrix)
+
+ReachabilityMatrix=I
+
+for x = 1:1:(N-1)
+    execstr("R"+string(x)+"=Matrix^x")
+    execstr("ReachabilityMatrix=ReachabilityMatrix+R"+string(x))
+    execstr("disp(ReachabilityMatrix)")
+end
+
+for b=1:1:N
+  for b1=1:1:N
+    if ReachabilityMatrix(b,b1) > 1
+    ReachabilityMatrix(b,b1)=1
+    end
+  end
+end
+
+disp(ReachabilityMatrix,"^^^^^^^ This is matrix of Reachability")
+
+ReachabilityMatrix_Transponent=ReachabilityMatrix';
+disp(ReachabilityMatrix_Transponent)
+
+StrongCoupling_Matrix=ReachabilityMatrix.*ReachabilityMatrix_Transponent
+
+disp(StrongCoupling_Matrix,"^^^^^^^ This is matrix of StrongCoupling")
+
+//searching strong Coupling Components
+StrongCoupling_forComponents_Matrix=StrongCoupling_Matrix
+
+[StrongCoupling_forComponents_Matrix,range]=gsort(StrongCoupling_forComponents_Matrix,'lc','d')
+
+temp7=StrongCoupling_forComponents_Matrix(7,:);
+temp9=StrongCoupling_forComponents_Matrix(9,:);
+normal=StrongCoupling_forComponents_Matrix(8,:);
+
+StrongCoupling_forComponents_Matrix(7,:)=normal;
+StrongCoupling_forComponents_Matrix(8,:)=normal;
+StrongCoupling_forComponents_Matrix(9,:)=temp7;
+StrongCoupling_forComponents_Matrix(10,:)=temp9;
+
+disp(StrongCoupling_forComponents_Matrix);
+
+range_list=list(range);
+
+disp(range_list)
+disp("^^range_list")
+
+Strong_Coupling_Components_Row1=StrongCoupling_forComponents_Matrix(1,:);
+
+Strong_Coupling_Components_Ones=find(Strong_Coupling_Components_Row1>0);
+
+Ones_Length=length(Strong_Coupling_Components_Ones)
+Zeros_Length=N-Ones_Length
+
+Strong_Coupling_Components_Ones_Permanent=list()
+
+for k=1:1:Ones_Length
+  t=range(k);
+  execstr("r"+string(k)+"="+string(t));
+  execstr("disp(r"+string(k)+","+char(39)+"r"+string(k)+char(39)+")");
+
+  execstr("Strong_Coupling_Components_Ones_Permanent("+string(k)+") = r"+string(k));
+
+  execstr("disp(Strong_Coupling_Components_Ones_Permanent("+string(k)+"))")
+end
+
+disp(Strong_Coupling_Components_Ones_Permanent)
+disp("^^^These are first strong Coupling Components^^^")
+
+Strong_Coupling_Components_Ones_Permanent_string=string(Strong_Coupling_Components_Ones_Permanent)
+
+Strong_Coupling_Components_Zeros_Permanent=list()
+
+for k=1:1:Zeros_Length
+  l=k+Ones_Length
+  t=range(l);
+  execstr("r"+string(k)+"="+string(t));
+  execstr("disp(r"+string(k)+","+char(39)+"r"+string(k)+char(39)+")");
+
+  execstr("Strong_Coupling_Components_Zeros_Permanent("+string(k)+") = r"+string(k));
+
+  execstr("disp(Strong_Coupling_Components_Zeros_Permanent("+string(k)+"))")
+end
+
+disp(Strong_Coupling_Components_Zeros_Permanent)
+disp("^^^These are Zeros strong Coupling Components^^^")
+
+xsetech([0.5,0,0.7,1]);
+plot2d(100,100,0);
+
+condensationMatrix=[0 1;0 0];
+N_con=2
+
+for x=1:1:N_con//making operations for each element
+  X_Position = cos(2 * %pi * x / N_con) * BigRadius + X_O;//calculating coordinates
+  Y_Position = sin(2 * %pi * x / N_con) * BigRadius + Y_O;
+
+  //drawing vertexes
+
+  // xarc(x,y,w,h,a1,a2) — малювання дуги еліпса, який вписаний у прямокутник
+  //з координатами (х,у) верхнього лівого кута і шириною w та висотою h,
+  //яка обмежена променями з кутами а1 і а2, які задаються у 64-х частках градуса.
+  //Наприклад, коло діаметром 4 одиниць з центром у точці (10,20) задається
+  //функцією xarc(8,22,4,4,0,360*64);
+
+  xarc(X_Position,Y_Position,DiameterOfCircle,DiameterOfCircle,0,360*64);
+
+  // xnumb(x,y,data) — вивід числа data починаючи з позиції з координатами
+  //(х,у).
+
+  xnumb(X_Position+RadiusOfCircle,Y_Position-RadiusOfCircle,x);
+end
+
+for i=1:1:N_con
+  for j=1:1:N_con
+    if condensationMatrix(i,j) == 1;
+
+      Position_X_I = cos(2 * %pi * i / N_con) * (BigRadius-RadiusOfCircle) + X_O;
+      Position_Y_I = sin(2 * %pi * i / N_con) * (BigRadius-RadiusOfCircle) + Y_O;
+      Position_X_J = cos(2 * %pi * j / N_con) * (BigRadius-RadiusOfCircle) + X_O;
+      Position_Y_J = sin(2 * %pi * j / N_con) * (BigRadius-RadiusOfCircle) + Y_O;
+
+      if i == j
+        A1=i;
+        A2=j;
+
+        Position_X_I = cos(2 * %pi * i / N_con) * (BigRadius) + X_O;
+        Position_Y_I = sin(2 * %pi * i / N_con) * (BigRadius) + Y_O;
+        Position_X_J = cos(2 * %pi * j / N_con) * (BigRadius) + X_O;
+        Position_Y_J = sin(2 * %pi * j / N_con) * (BigRadius) + Y_O;
+        xarc(Position_X_I-RadiusOfCircle,Position_Y_I+RadiusOfCircle*3/4,3/2*DiameterOfCircle,3/2*DiameterOfCircle,0,190*64);
+
+        //xarrows([x1;x2], [y1;y2], w, c) — стрілка з координатами початку
+        //(x1;y1), кінця (x2;y2), розмірами вістря w і кольором с (с=1 –чорний, 2– синій і
+        //т.д.).
+
+        xarrows([Position_X_I-RadiusOfCircle; Position_X_J],[Position_Y_I-RadiusOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, 1);
+
+      else
+        if condensationMatrix(i,j)==condensationMatrix(j,i) && i>j
+
+          if TypeOfGraph == 1
+            CentrePosition_X = (Position_X_I+RadiusOfCircle+Position_X_J+RadiusOfCircle)/2;
+            CentrePosition_Y = (Position_Y_I-RadiusOfCircle+Position_Y_J)/2;
+
+            // xsegs([x1;y1], [x2;y2], c) — пряма з координатами початку [x1;y1],
+            //кінця [x2;y2] і кольором с.
+
+            if (CentrePosition_X<X_O && CentrePosition_Y<Y_O)
+              xsegs([Position_X_I+RadiusOfCircle; CentrePosition_X+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; CentrePosition_Y+DiameterOfCircle],ColorOfArrow_2);
+              xarrows([CentrePosition_X+RadiusOfCircle; Position_X_J+RadiusOfCircle],[CentrePosition_Y+DiameterOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_2);
+
+            elseif (CentrePosition_X>X_O && CentrePosition_Y<Y_O)
+              xsegs([Position_X_I+RadiusOfCircle; CentrePosition_X+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; CentrePosition_Y+DiameterOfCircle],ColorOfArrow_2);
+              xarrows([CentrePosition_X+RadiusOfCircle; Position_X_J+RadiusOfCircle],[CentrePosition_Y+DiameterOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_2);
+
+            elseif (CentrePosition_X>X_O && CentrePosition_Y>Y_O)
+              xsegs([Position_X_I+RadiusOfCircle; CentrePosition_X-RadiusOfCircle],[Position_Y_I-RadiusOfCircle; CentrePosition_Y-DiameterOfCircle],ColorOfArrow_2);
+              xarrows([CentrePosition_X-RadiusOfCircle; Position_X_J+RadiusOfCircle],[CentrePosition_Y-DiameterOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_2);
+
+            elseif (CentrePosition_X<X_O && CentrePosition_Y>Y_O)
+              xsegs([Position_X_I+RadiusOfCircle; CentrePosition_X+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; CentrePosition_Y-DiameterOfCircle],ColorOfArrow_2);
+              xarrows([CentrePosition_X+RadiusOfCircle; Position_X_J+RadiusOfCircle],[CentrePosition_Y-DiameterOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_2);
+
+            end
+
+          else
+            xarrows([Position_X_I+RadiusOfCircle; Position_X_J+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_1);
+
+        end
+
+          elseif TypeOfGraph == 0
+            else
+            xarrows([Position_X_I+RadiusOfCircle; Position_X_J+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_1);
+          end
+      end
+    end
+  end
+end
+
+Strong_Coupling_Components_Ones_Permanent_Length=length(Strong_Coupling_Components_Ones_Permanent)
+
+function [l,k,b,s]=foo(w,c)
+              l=string(w);   //-->'1' '6' '8'
+              for k=1:1:c
+                t=l(k);
+                execstr("r"+string(k)+"="+string(t));
+                execstr('b=r'+string(k));
+                execstr('s=find(v'+string(b)+'>0)');  //'s=find(v')
+              end
+endfunction
+
+//Making variables for each row in matrix
+for x=1:1:N
+  execstr("v"+string(x)+"=Matrix("+string(x)+",:)");
+end
+
+for y=1:1:N
+  execstr("disp(v"+string(y)+","+char(39)+"v_str"+string(y)+char(39)+")");
+end
+
+//Making variables for each element in a matrix
+for i = 1:1:N
+    for j = 1:1:N
+        //making variables and displaying them
+
+        execstr("M"+string(i)+string(j)+"=v"+string(i)+"("+string(j)+")");   //working
+        execstr(['if M'+string(i)+string(j)+'>0 then';
+                    'w=find(v'+string(j)+'>0)';  //2,4
+                    'z=string(w)';
+                    'c=length(w)';
+        'end']);
+
+        execstr(['if M'+string(i)+string(j)+'>0 then';
+                        '[l,k,b,s]=foo(w,c)';
+                        'disp('+char(39)+'first vertex is '+string(i)+char(39)+')'
+                        'disp('+char(39)+'second is '+string(j)+char(39)+')'
+                        'disp('+char(39)+'next is '+char(39)+'+ string(w))'
+                        'disp('+char(39)+'and the last one is '+char(39)+'+string(s))'
+                        'disp('+char(39)+'/////////////////////'+char(39)+')'
+                    'else'
+                    'end'])
+    end
+end
+
+//making Incidence matrix
+
+TotalLines=0;
+Incidence_matrix=zeros(N,TotalLines);
+
+for x=1:1:N
+  for y=1:1:N
+    if Matrix(x,y) == 1
+      TotalLines=TotalLines+1;
+      if x~=y
+        Incidence_matrix(x,TotalLines)=-1
+        Incidence_matrix(y,TotalLines)=1
+      else
+        Incidence_matrix(x,TotalLines)=0
+      end
+    end
+  end
+end

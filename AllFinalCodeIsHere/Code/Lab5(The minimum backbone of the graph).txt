@@ -1,0 +1,244 @@
+clf;  //clearing canvas
+clear;
+
+TypeOfGraph = 0; //0 is for non-oriented,1 for oriented
+
+N1 = 9;  //numbers of My Zalikovka to make figure
+N2 = 8;
+N3 = 8;
+N4 = 2;
+
+N = 10 + N3;  //number of vertexes
+
+//preparing for making canvas
+//making values for plot2d
+
+//x on left is 0
+ForPlot_X1 = 0;
+//x on right is 70
+ForPlot_X2 = 70;
+//y on down is 0
+ForPlot_Y1 = 0;
+//y on upper is 70
+ForPlot_Y2 = 70;
+
+RadiusOfCircle = 5;  //Woah,its radius of circle
+DiameterOfCircle = 2*RadiusOfCircle; //Woah,its diameter of circle
+TopLimit = 999;
+S=2;
+
+ColorOfArrow_1 = 14;  //color of arrow_1  //1 is good
+ColorOfArrow_2 = 9;  //color of arrow_2   //3,
+
+N1N2N3N4 = N1*1000 + N2*100 + N3*10 + N4
+
+//generating matrix for or-graph(from the konspekt)
+rand("seed", N1N2N3N4);
+T = rand(N,N) + rand(N,N);
+A_oriented = floor((1.0 - N3*0.01 - N4*0.005 - 0.05)*T)
+
+//generating matrix for non_or-graph
+At=A_oriented';  //transpose matrix
+A_non_oriented=At+A_oriented;  //final non_oriented matrix(adding regular matrix and transpose)
+disp(A_non_oriented)
+
+//loop,where we changing 2,which we get by adding
+//two matrixes,for every element,that = 2
+
+for v=1:1:N
+  for v1=1:1:N
+    if A_non_oriented(v,v1) == 2
+    A_non_oriented(v,v1)=1
+    end
+  end
+end
+
+//choosing matrix and width of arrows
+if TypeOfGraph == 0
+  Matrix = A_non_oriented;
+  WidthOfArrow = 0;
+elseif TypeOfGraph == 1
+  Matrix = A_oriented;
+  WidthOfArrow = 30;
+end
+
+//making canvas with our varibles
+
+//plot2d([0,200],[0,100],[-1,-1],"022") — формує
+//прямокутне поле у графічному вікні розміром 100х200 одиниць.
+//xsetech-ділить вікно на області
+xsetech([0,0,0.5,1]);
+plot2d([ForPlot_X1;ForPlot_X2],[ForPlot_Y1;ForPlot_Y2],0);
+
+//looking for a center
+//(100-0)/2=50
+X_O = (ForPlot_X2-ForPlot_X1)/2;
+Y_O = (ForPlot_Y2-ForPlot_Y1)/2;
+//radius of the big circle,on which we will place our vertexes
+BigRadius = 2/5*sqrt((ForPlot_X2-ForPlot_X1)*(ForPlot_Y2-ForPlot_Y1))
+
+Wt = round(rand(N,N)*100.* Matrix);
+disp(Wt)
+B = Wt & ones(N,N);
+disp(B)
+Wt = (bool2s(B & ~B') + bool2s(B & B').* tril(ones(N,N),-1)).* Wt;
+disp(Wt)
+W = Wt + Wt';
+
+function [MinimalIndicator]=MinimalConf(Lead,Congifure)
+	Minimal=TopLimit;
+	MinimalIndicator=-1;
+	for x=1:1:N
+		if Congifure(x)==0 && Lead(x)<Minimal
+			Minimal=Lead(x);
+      MinimalIndicator=x;
+		end
+	end
+endfunction
+
+Prim_Matrix=zeros(N,N);
+
+for x=1:1:N//making operations for each element
+  X_Position = cos(2 * %pi * x / N) * BigRadius + X_O;//calculating coordinates
+  Y_Position = sin(2 * %pi * x / N) * BigRadius + Y_O;
+
+  //drawing vertexes
+
+  // xarc(x,y,w,h,a1,a2) — малювання дуги еліпса, який вписаний у прямокутник
+  //з координатами (х,у) верхнього лівого кута і шириною w та висотою h,
+  //яка обмежена променями з кутами а1 і а2, які задаються у 64-х частках градуса.
+  //Наприклад, коло діаметром 4 одиниць з центром у точці (10,20) задається
+  //функцією xarc(8,22,4,4,0,360*64);
+
+  xarc(X_Position,Y_Position,DiameterOfCircle,DiameterOfCircle,0,360*64);
+
+  // xnumb(x,y,data) — вивід числа data починаючи з позиції з координатами
+  //(х,у).
+
+  xnumb(X_Position+RadiusOfCircle,Y_Position-RadiusOfCircle,x);
+end
+
+for x=1:1:N
+  Root(x)=0;
+	Lead(x)=TopLimit;
+  Congifure(x)=0;
+end
+
+for i=1:1:N
+  for j=1:1:N
+    if Matrix(i,j) == 1;
+
+      Position_X_I = cos(2 * %pi * i / N) * (BigRadius-RadiusOfCircle) + X_O;
+      Position_Y_I = sin(2 * %pi * i / N) * (BigRadius-RadiusOfCircle) + Y_O;
+      Position_X_J = cos(2 * %pi * j / N) * (BigRadius-RadiusOfCircle) + X_O;
+      Position_Y_J = sin(2 * %pi * j / N) * (BigRadius-RadiusOfCircle) + Y_O;
+
+      if i == j
+
+        Position_X_I = cos(2 * %pi * i / N) * (BigRadius) + X_O;
+        Position_Y_I = sin(2 * %pi * i / N) * (BigRadius) + Y_O;
+        Position_X_J = cos(2 * %pi * j / N) * (BigRadius) + X_O;
+        Position_Y_J = sin(2 * %pi * j / N) * (BigRadius) + Y_O;
+        xarc(Position_X_I-RadiusOfCircle,Position_Y_I+RadiusOfCircle*3/4,3/2*DiameterOfCircle,3/2*DiameterOfCircle,0,190*64);
+
+        //xarrows([x1;x2], [y1;y2], w, c) — стрілка з координатами початку
+        //(x1;y1), кінця (x2;y2), розмірами вістря w і кольором с (с=1 –чорний, 2– синій і
+        //т.д.).
+
+        xarrows([Position_X_I-RadiusOfCircle; Position_X_J],[Position_Y_I-RadiusOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, 1);
+
+      else
+            xarrows([Position_X_I+RadiusOfCircle; Position_X_J+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_1);
+
+            CentrePosition_X = (Position_X_I+RadiusOfCircle+Position_X_J+RadiusOfCircle)/2;
+            CentrePosition_Y = (Position_Y_I+RadiusOfCircle+Position_Y_J+RadiusOfCircle)/2;
+
+            FirstCoord=((Position_X_I+RadiusOfCircle)+(Position_X_J+RadiusOfCircle))/2;
+            SecondCoord=((Position_Y_I-RadiusOfCircle)+(Position_Y_J-RadiusOfCircle))/2;
+
+            xnumb(FirstCoord,SecondCoord,W(i,j));
+        	end
+          end
+  end
+end
+
+Root(1)=-1;
+Lead(1)=0;
+
+xsetech([0.5,0,0.5,1]);
+plot2d([ForPlot_X1;ForPlot_X2],[ForPlot_Y1;ForPlot_Y2],0);
+
+//looking for a center
+//(100-0)/2=50
+X_O = (ForPlot_X2-ForPlot_X1)/2;
+Y_O = (ForPlot_Y2-ForPlot_Y1)/2;
+//radius of the big circle,on which we will place our vertexes
+BigRadius = 2/5*sqrt((ForPlot_X2-ForPlot_X1)*(ForPlot_Y2-ForPlot_Y1))
+
+for Tick=1:1:N-1
+	L=MinimalConf(Lead,Congifure);
+	Congifure(L)=1;
+	for P=1:1:N
+		if W(L,P)~=0 && Congifure(P)==0 && W(L,P)<Lead(P)
+			Root(P)=L;
+      Lead(P)=W(L,P);
+		end
+	end
+end
+
+for x=1:1:N//making operations for each element
+  X_Position = cos(2 * %pi * x / N) * BigRadius + X_O;//calculating coordinates
+  Y_Position = sin(2 * %pi * x / N) * BigRadius + Y_O;
+
+  //drawing vertexes
+
+  // xarc(x,y,w,h,a1,a2) — малювання дуги еліпса, який вписаний у прямокутник
+  //з координатами (х,у) верхнього лівого кута і шириною w та висотою h,
+  //яка обмежена променями з кутами а1 і а2, які задаються у 64-х частках градуса.
+  //Наприклад, коло діаметром 4 одиниць з центром у точці (10,20) задається
+  //функцією xarc(8,22,4,4,0,360*64);
+
+  xarc(X_Position,Y_Position,DiameterOfCircle,DiameterOfCircle,0,360*64);
+
+  // xnumb(x,y,data) — вивід числа data починаючи з позиції з координатами
+  //(х,у).
+
+  xnumb(X_Position+RadiusOfCircle,Y_Position-RadiusOfCircle,x);
+end
+
+disp("This is table of weights and arrows")
+for y=S:1:N
+	disp(string(W(y,Root(y)))+'(Weight):'+string(y)+'(First Vertex):'+string(Root(y))+'(Second Vertex)');
+  M=W(y,Root(y));
+  Prim_Matrix(y,Root(y))=M;
+	Prim_Matrix(Root(y),y)=M;
+end
+
+disp("This is the "+char(39)+"кістяк"+char(39)+" of graph",Prim_Matrix)
+
+disp("This is an adjacency matrix of oriented graph",A_oriented)
+disp("This is an adjacency matrix of non oriented graph",A_non_oriented)
+disp("This is a weight matrix",W)
+
+for i=1:1:N
+	for j=1:1:N
+		if Prim_Matrix(i,j) > 0 || Prim_Matrix(i,j) < 0
+      X_Position = cos(2 * %pi * x / N) * BigRadius + X_O;//calculating coordinates
+      Y_Position = sin(2 * %pi * x / N) * BigRadius + Y_O;
+
+      Position_X_I = cos(2 * %pi * i / N) * (BigRadius-RadiusOfCircle) + X_O;
+      Position_Y_I = sin(2 * %pi * i / N) * (BigRadius-RadiusOfCircle) + Y_O;
+      Position_X_J = cos(2 * %pi * j / N) * (BigRadius-RadiusOfCircle) + X_O;
+      Position_Y_J = sin(2 * %pi * j / N) * (BigRadius-RadiusOfCircle) + Y_O;
+			halt
+			xarrows([Position_X_I+RadiusOfCircle; Position_X_J+RadiusOfCircle],[Position_Y_I-RadiusOfCircle; Position_Y_J-RadiusOfCircle], WidthOfArrow, ColorOfArrow_1);
+	    CentrePosition_X = (Position_X_I+RadiusOfCircle+Position_X_J+RadiusOfCircle)/2;
+      CentrePosition_Y = (Position_Y_I-RadiusOfCircle+Position_Y_J)/2;
+
+      FirstCoord=((Position_X_I+RadiusOfCircle)+(Position_X_J+RadiusOfCircle))/2;
+      SecondCoord=((Position_Y_I-RadiusOfCircle)+(Position_Y_J-RadiusOfCircle))/2;
+
+      xnumb(FirstCoord,SecondCoord,W(i,j));
+		end
+	end
+end
